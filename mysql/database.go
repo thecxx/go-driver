@@ -89,17 +89,12 @@ func NewDatabaseWithConfig(config *Config) (*Database, error) {
 	return &Database{config.Tag(), db}, nil
 }
 
-// Stats
-func (d *Database) Stats() Statistics {
-	return Statistics{d.db.Stats()}
-}
-
 // Ping
 func (d *Database) Ping() error {
 	return d.db.PingContext(context.Background())
 }
 
-// Ping
+// PingContext
 func (d *Database) PingContext(ctx context.Context) error {
 	return d.db.PingContext(ctx)
 }
@@ -109,12 +104,12 @@ func (d *Database) Close() error {
 	return d.db.Close()
 }
 
-// Check if it's in a transaction
+// InTransaction
 func (d *Database) InTransaction() bool {
 	return false
 }
 
-// Begin a new transaction
+// BeginTransaction
 func (d *Database) BeginTransaction(ctx context.Context) (*Transaction, *TransactionCloser, error) {
 	tx, err := d.db.BeginTx(ctx, nil)
 	if err != nil {
@@ -128,7 +123,7 @@ func (d *Database) Prepare(query string) (stmt *Statement, err error) {
 	return d.PrepareContext(context.Background(), query)
 }
 
-// Prepare
+// PrepareContext
 func (d *Database) PrepareContext(ctx context.Context, query string) (stmt *Statement, err error) {
 	s, err := d.db.PrepareContext(ctx, query)
 	if err != nil {
@@ -142,7 +137,7 @@ func (d *Database) Exec(query string, args ...interface{}) (num int64, id int64,
 	return d.ExecContext(context.Background(), query, args...)
 }
 
-// Exec
+// ExecContext
 func (d *Database) ExecContext(ctx context.Context, query string, args ...interface{}) (num int64, id int64, err error) {
 	result, err := d.db.ExecContext(ctx, query, args...)
 	if err != nil {
@@ -164,7 +159,7 @@ func (d *Database) Query(alloc RowAllocFunc, query string, args ...interface{}) 
 	return d.QueryContext(context.Background(), alloc, query, args...)
 }
 
-// Query
+// QueryContext
 func (d *Database) QueryContext(ctx context.Context, alloc RowAllocFunc, query string, args ...interface{}) (num int64, err error) {
 	rows, err := d.db.QueryContext(ctx, query, args...)
 	if err != nil {

@@ -25,12 +25,12 @@ type Transaction struct {
 	tx *sql.Tx
 }
 
-// Check if it's in a transaction
+// InTransaction
 func (t *Transaction) InTransaction() bool {
 	return true
 }
 
-// Begin a new transaction
+// BeginTransaction
 func (t *Transaction) BeginTransaction(context.Context) (*Transaction, *TransactionCloser, error) {
 	return nil, nil, fmt.Errorf("Already in transaction")
 }
@@ -40,7 +40,7 @@ func (t *Transaction) Prepare(query string) (stmt *Statement, err error) {
 	return t.PrepareContext(context.Background(), query)
 }
 
-// Prepare
+// PrepareContext
 func (t *Transaction) PrepareContext(ctx context.Context, query string) (stmt *Statement, err error) {
 	s, err := t.tx.PrepareContext(ctx, query)
 	if err != nil {
@@ -54,7 +54,7 @@ func (t *Transaction) Exec(query string, args ...interface{}) (num int64, id int
 	return t.ExecContext(context.Background(), query, args...)
 }
 
-// Exec
+// ExecContext
 func (t *Transaction) ExecContext(ctx context.Context, query string, args ...interface{}) (num int64, id int64, err error) {
 	result, err := t.tx.ExecContext(ctx, query, args...)
 	if err != nil {
@@ -76,7 +76,7 @@ func (t *Transaction) Query(alloc RowAllocFunc, query string, args ...interface{
 	return t.QueryContext(context.Background(), alloc, query, args...)
 }
 
-// Query
+// QueryContext
 func (t *Transaction) QueryContext(ctx context.Context, alloc RowAllocFunc, query string, args ...interface{}) (num int64, err error) {
 	rows, err := t.tx.QueryContext(ctx, query, args...)
 	if err != nil {

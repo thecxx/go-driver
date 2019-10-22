@@ -9,8 +9,8 @@ import (
 
 const (
 	// Group names
-	ClusterWriter = "w"
-	ClusterReader = "r"
+	GroupWriter = "w"
+	GroupReader = "r"
 	// Default value
 	DefaultWeight int64 = 1
 )
@@ -18,10 +18,10 @@ const (
 var (
 	//
 	commands = map[string]string{
-		"SELECT": ClusterReader,
-		"INSERT": ClusterWriter,
-		"UPDATE": ClusterWriter,
-		"DELETE": ClusterWriter,
+		"SELECT": GroupReader,
+		"INSERT": GroupWriter,
+		"UPDATE": GroupWriter,
+		"DELETE": GroupWriter,
 	}
 )
 
@@ -47,8 +47,8 @@ func NewClusterWithGroups(w, r *Group) *Cluster {
 	if r == nil {
 		r = NewGroup()
 	}
-	c.groups[ClusterWriter] = w
-	c.groups[ClusterReader] = r
+	c.groups[GroupWriter] = w
+	c.groups[GroupReader] = r
 
 	return c
 }
@@ -99,7 +99,7 @@ func (c *Cluster) AddBackend(group string, config *Config, weight int64, healthC
 	return nil
 }
 
-// Check if the specific group is available
+// Ping
 func (c *Cluster) Ping(group string) error {
 	g, ok := c.groups[group]
 	if !ok {
@@ -108,14 +108,14 @@ func (c *Cluster) Ping(group string) error {
 	return g.ping()
 }
 
-// Check if it's in a transaction
+// InTransaction
 func (c *Cluster) InTransaction() bool {
 	return false
 }
 
-// Begin a new transaction
+// BeginTransaction
 func (c *Cluster) BeginTransaction(ctx context.Context) (*Transaction, *TransactionCloser, error) {
-	g := c.groups[ClusterWriter]
+	g := c.groups[GroupWriter]
 	if g.isEmpty() {
 		return nil, nil, fmt.Errorf("No backend usable")
 	}
@@ -123,11 +123,12 @@ func (c *Cluster) BeginTransaction(ctx context.Context) (*Transaction, *Transact
 }
 
 // Prepare
+// In the case of multiple backends, it will be bound to the same backend
 func (c *Cluster) Prepare(query string) (stmt *Statement, err error) {
 	return c.PrepareContext(context.Background(), query)
 }
 
-// Prepare
+// PrepareContext
 // In the case of multiple backends, it will be bound to the same backend
 func (c *Cluster) PrepareContext(ctx context.Context, query string) (stmt *Statement, err error) {
 	g, err := c.parseGroup(query, false)
@@ -145,7 +146,7 @@ func (c *Cluster) Exec(query string, args ...interface{}) (num int64, id int64, 
 	return c.ExecContext(context.Background(), query, args...)
 }
 
-// Exec
+// ExecContext
 func (c *Cluster) ExecContext(ctx context.Context, query string, args ...interface{}) (num int64, id int64, err error) {
 	g, err := c.parseGroup(query, false)
 	if err != nil {
@@ -162,7 +163,7 @@ func (c *Cluster) Query(alloc RowAllocFunc, query string, args ...interface{}) (
 	return c.QueryContext(context.Background(), alloc, query, args...)
 }
 
-// Query
+// QueryContext
 func (c *Cluster) QueryContext(ctx context.Context, alloc RowAllocFunc, query string, args ...interface{}) (num int64, err error) {
 	g, err := c.parseGroup(query, true)
 	if err != nil {

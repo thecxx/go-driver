@@ -16,7 +16,7 @@ func TestQueryFromWriter(t *testing.T) {
 	c := NewCluster()
 
 	// writer
-	err := c.AddBackend(ClusterWriter, wr, DefaultWeight, false)
+	err := c.AddBackend(GroupWriter, wr, DefaultWeight, false)
 	if err != nil {
 		t.Errorf("AddBackend failed: %s\n", err.Error())
 		return
@@ -25,7 +25,7 @@ func TestQueryFromWriter(t *testing.T) {
 	// reader
 	wr.Addr = "127.0.0.1:3307"
 
-	err = c.AddBackend(ClusterReader, wr, DefaultWeight, false)
+	err = c.AddBackend(GroupReader, wr, DefaultWeight, false)
 	if err != nil {
 		t.Errorf("AddBackend failed: %s\n", err.Error())
 		return
