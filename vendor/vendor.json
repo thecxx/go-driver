@@ -13,6 +13,24 @@
 			"revisionTime": "2019-09-07T12:21:37Z"
 		},
 		{
+			"checksumSHA1": "40vJyUB4ezQSn/NSadsKEOrudMc=",
+			"path": "github.com/inconshreveable/mousetrap",
+			"revision": "76626ae9c91c4f2a10f34cad8ce83ea42c93bb75",
+			"revisionTime": "2014-10-17T20:07:13Z"
+		},
+		{
+			"checksumSHA1": "SGOQCjbvpbOC/I76hXessvfhYqY=",
+			"path": "github.com/spf13/cobra",
+			"revision": "77e4d5aecc4d34e58f72e5a1c4a5a13ef55e6f44",
+			"revisionTime": "2019-10-19T22:17:41Z"
+		},
+		{
+			"checksumSHA1": "ojfUmKmPV01UCwuEl/cT2WAYppw=",
+			"path": "github.com/spf13/pflag",
+			"revision": "2e9d26c8c37aae03e3f9d4e90b7116f5accb7cab",
+			"revisionTime": "2019-09-18T19:59:20Z"
+		},
+		{
 			"checksumSHA1": "LiyXfqOzaeQ8vgYZH3t2hUEdVTw=",
 			"path": "google.golang.org/appengine/cloudsql",
 			"revision": "5f2a59506353b8d5ba8cbbcd9f3c1f41f1eaf079",
